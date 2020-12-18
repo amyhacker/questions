@@ -1,0 +1,158 @@
+<!DOCTYPE html> 
+<html> 
+    
+    <head> 
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.4.4.min.js" type="text/javascript"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js" type="text/javascript"></script>
+        <style>
+            body { background: #e1f5fe;}
+            #search-box{padding-left:0;position:relative;}
+            #search-box input{width:100%;border:0;height:60px;border-radius:25px;outline:none;padding-left:60px;line-height:61px;box-shadow:12px 12px 30px 0 rgba(77,77,119,.10);font-weight:500;color:#8ba2ad;}
+            #search-box input::-webkit-input-placeholder{font-weight:500;color:#c5d3de;font-size:14px;}
+            #search-box input::-moz-placeholder{font-weight:500;color:#c5d3de;font-size:14px;}
+            #search-box input::-ms-input-placeholder{font-weight:500;color:#c5d3de;font-size:14px;}
+            #search-box input::-moz-placeholder{font-weight:500;color:#c5d3de;font-size:14px;}
+            #search-box .fa-globe{position:absolute;top:19px;left:22px;font-size:23px;color:#dcdee0;}
+            #search-box .inline-search{position:absolute;top:10px;right:25px;}
+            #search-box .inline-search #search-btn{background-image:linear-gradient(to right,#6A1B9A,#9C27B0);border:0;transition:background-size .2s ease-in-out,.2s box-shadow ease-in-out,.2s filter,.3s opacity;color:#fff;height:40px;width:40px;font-size:14px;border-radius:50px;outline:none !important;line-height:40px;cursor:pointer;box-shadow:3px 4px 31px 0 rgba(253, 165, 93, 0.54);margin-left:2px;-webkit-transition:all 0.2s ease-in-out;-moz-transition:all 0.2s ease-in-out;-o-transition:all 0.2s ease-in-out;-ms-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;}
+            #search-box .inline-search #search-btn:hover{background-size:175% 100%;color:#fff;outline:none;transition:background-size .2s ease-in-out,.2s box-shadow ease-in-out,.2s filter,.3s opacity;}
+            #search-box .inline-search #transfer-btn{background-image:linear-gradient(to right,#5c5cfd,#d65ffd);border:0;transition:background-size .2s ease-in-out,.2s box-shadow ease-in-out,.2s filter,.3s opacity;color:#fff;height:40px;width:40px;font-size:14px;border-radius:50px;outline:none !important;line-height:40px;cursor:pointer;box-shadow:3px 4px 31px 0 rgba(149, 94, 253, 0.45);-webkit-transition:all 0.2s ease-in-out;-moz-transition:all 0.2s ease-in-out;-o-transition:all 0.2s ease-in-out;-ms-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;}
+            #search-box .inline-search #transfer-btn:hover{background-size:175% 100%;color:#fff;outline:none;transition:background-size .2s ease-in-out,.2s box-shadow ease-in-out,.2s filter,.3s opacity;}
+            
+            
+        </style>
+        <style>
+            .wimg{
+                float: right;
+            }
+        </style>
+    </head> 
+    
+    <body> 
+        
+        
+<div id="search-box" class="col-md-6 offset-md-3 mt-5"> 
+            <i class="fa fa-globe"></i>
+            <input id='term' type="text" placeholder="Type your keyword here..." >
+            <span class="inline-search">
+                
+            </span>
+        </div>
+        
+        
+        <div class="container">
+            <div class="row categ-List " style="margin-top:10px;">
+                
+                
+            </div>
+        </div>
+        
+        
+        
+        
+        
+        
+        <script id="country" type="text/x-jquery-tmpl">
+        
+            <div id="${getweather($data)}" class="col-6">
+
+                    <div class="card" >
+                        <div class="card-body">  <img class="wimg" src="${weather.current.weather_icons[0]}" alt="">
+                        <h3>${weather.current.temperature}°C</h3>
+                        <p>${weather.current.weather_descriptions}</p>
+                        <h4 class="card-title">${name},</h4>      
+                        <h6>capital :${capital}</h6>
+                        <h6>Currency :${currencies[0].code}</h6>
+                        <h6>Currency Exchange Rate in USD:${curr.rates[currencies[0].code]}</h6>
+                        <h6>Time :${weather.location.localtime}</h6>
+            
+           
+                        </div>
+                   
+                    </div>
+                </div>
+        
+        
+        
+        
+            
+        </script>
+        
+        
+        <script type="text/javascript"> 
+            
+            
+         
+            var country=[];
+            $("#term").change( function(){
+                var str = this.value;
+                $('.categ-List').html('searching...');
+                    
+                    $.ajax({
+                        url: 'https://restcountries.eu/rest/v2/name/'+str,
+                        type: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Api-Key:': '062ae686-e54d-4ec7-995f-3ff42d1d5987'
+                        },
+                        success: function (data) { 
+                            if(data.length==0){
+                                $('.categ-List').html('<h1>Not found </h1>')
+                            }else{
+                                country=data;
+                                
+                            
+                                $(".categ-List").html($("#country")
+                                .tmpl( data ));
+                                
+                                
+                            }
+                            
+                        },
+                        error :function (data) {
+                             $('.categ-List').html('<h1>Not found </h1>')
+                        }
+                    });
+                
+            }); 
+            function  getweather(item) {
+                var it_works = false;
+                
+                $.ajax({
+                    type: 'GET',
+                    async: false,
+                    url: "http://api.weatherstack.com/current?access_key=4557f48c3266ad08d03223172de35f6c&query="+item.name,
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Api-Key:': '062ae686-e54d-4ec7-995f-3ff42d1d5987'
+                    },
+                    success: function(data) {weather = data;}
+                });
+                console.log('s');
+                return weather;
+            }
+            function  getcurrency()  {
+                var it_works = false;
+                $.ajax({
+                    type: 'GET',
+                    async: false,
+                    url: "https://api.currencyfreaks.com/latest?apikey=82234f8739a34527b13dad09bc1c5a97",
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Api-Key:': '062ae686-e54d-4ec7-995f-3ff42d1d5987'
+                    },
+                    success: function(data) {it_works = data;}
+                });
+                return it_works;
+            }
+            var curr=getcurrency();
+            console.log(curr);
+            var weather = null;
+        </script> 
+        
+    </body> 
+    
+</html> 

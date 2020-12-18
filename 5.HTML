@@ -1,0 +1,152 @@
+<!DOCTYPE html> 
+<html> 
+    
+    <head> 
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.4.4.min.js" type="text/javascript"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js" type="text/javascript"></script>
+        <style>
+            body { background: #e1f5fe;}
+            #search-box{padding-left:0;position:relative;}
+            #search-box input{width:100%;border:0;height:60px;border-radius:25px;outline:none;padding-left:60px;line-height:61px;box-shadow:12px 12px 30px 0 rgba(77,77,119,.10);font-weight:500;color:#8ba2ad;}
+            #search-box input::-webkit-input-placeholder{font-weight:500;color:#c5d3de;font-size:14px;}
+            #search-box input::-moz-placeholder{font-weight:500;color:#c5d3de;font-size:14px;}
+            #search-box input::-ms-input-placeholder{font-weight:500;color:#c5d3de;font-size:14px;}
+            #search-box input::-moz-placeholder{font-weight:500;color:#c5d3de;font-size:14px;}
+            #search-box .fa-globe{position:absolute;top:19px;left:22px;font-size:23px;color:#dcdee0;}
+            #search-box .inline-search{position:absolute;top:10px;right:25px;}
+            #search-box .inline-search #search-btn{background-image:linear-gradient(to right,#6A1B9A,#9C27B0);border:0;transition:background-size .2s ease-in-out,.2s box-shadow ease-in-out,.2s filter,.3s opacity;color:#fff;height:40px;width:40px;font-size:14px;border-radius:50px;outline:none !important;line-height:40px;cursor:pointer;box-shadow:3px 4px 31px 0 rgba(253, 165, 93, 0.54);margin-left:2px;-webkit-transition:all 0.2s ease-in-out;-moz-transition:all 0.2s ease-in-out;-o-transition:all 0.2s ease-in-out;-ms-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;}
+            #search-box .inline-search #search-btn:hover{background-size:175% 100%;color:#fff;outline:none;transition:background-size .2s ease-in-out,.2s box-shadow ease-in-out,.2s filter,.3s opacity;}
+            #search-box .inline-search #transfer-btn{background-image:linear-gradient(to right,#5c5cfd,#d65ffd);border:0;transition:background-size .2s ease-in-out,.2s box-shadow ease-in-out,.2s filter,.3s opacity;color:#fff;height:40px;width:40px;font-size:14px;border-radius:50px;outline:none !important;line-height:40px;cursor:pointer;box-shadow:3px 4px 31px 0 rgba(149, 94, 253, 0.45);-webkit-transition:all 0.2s ease-in-out;-moz-transition:all 0.2s ease-in-out;-o-transition:all 0.2s ease-in-out;-ms-transition:all 0.2s ease-in-out;transition:all 0.2s ease-in-out;}
+            #search-box .inline-search #transfer-btn:hover{background-size:175% 100%;color:#fff;outline:none;transition:background-size .2s ease-in-out,.2s box-shadow ease-in-out,.2s filter,.3s opacity;}
+            
+            
+        </style>
+        <style>
+            .categ-List {
+                margin: 10px;
+            }
+            .categ-List .col-lg-4 { 
+                background-color: #fff;
+                padding: 5px;
+            
+            }
+            .categ img {  width: 100%; cursor: pointer;height: 300px;}            
+            .info { display: none;position: absolute; width: 100%; text-align: center; transform: translateY(100%);  top: 0; background: #fffffff2;
+                max-width: 80%;  margin: 0% 10%; cursor: pointer; border-radius: 5px; padding: 15px 0px; transition: all .5s; }
+            .categ { position: relative; }
+            .categ:hover .info { display: block; border-radius: 50px;  max-width:90%; margin: 0% 5%; }
+            .info h6 { margin: 0; padding: 0; text-transform: uppercase;}
+            .info h4 { margin: 0; padding: 0; font-weight: 600; font-size: 22px; line-height: 1.6;}
+        </style>
+    </head> 
+    
+    <body> 
+        
+        
+        <div id="search-box" class="col-md-6 offset-md-3 mt-5"> 
+            <i class="fa fa-globe"></i>
+            <input id='term' type="text" placeholder="Type your keyword here..." >
+            <span class="inline-search">
+                
+            </span>
+        </div>
+        
+        
+        <div class="container">
+            <div class="row categ-List">
+                
+            </div>
+        </div>
+        
+        
+        <script type="text/javascript"> 
+            
+           
+            
+            $("#term").keyup( function(){
+                var str = this.value;
+                var n = str.length;
+                $('.categ-List').html('');
+                if(n>2){
+                    $('.categ-List').html('searching...');
+                    
+                    $.ajax({
+                        url: 'https://api.thedogapi.com/v1/breeds/search?q='+str,
+                        type: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Api-Key:': '062ae686-e54d-4ec7-995f-3ff42d1d5987'
+                        },
+                        success: function (data) { 
+                            //                        response(data[1]); 
+                            
+                            if(data.length==0){
+                                $('.categ-List').html('<h1>Not found </h1>')
+                            }else{
+                              
+                                $(".categ-List").html($("#breeds")
+                                .tmpl( data.slice(0,6) ));  
+                            }
+                            
+                        }
+                    });
+                }
+            }); 
+            
+            
+       
+               function  getimage() {
+                //var abc='';
+                //                
+                if(!this.data.reference_image_id){
+                    return 'data:image/png;base64,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'
+                }
+                
+                var it_works = false;
+                
+                $.ajax({
+                    type: 'GET',
+                    async: false,
+                    url: "https://api.thedogapi.com/v1/images/"+this.data.reference_image_id,
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Api-Key:': '062ae686-e54d-4ec7-995f-3ff42d1d5987'
+                    },
+                    success: function(data) {it_works = data.url;}
+                });
+                
+                console.log (it_works)
+                
+                return it_works;
+                
+                
+                
+            }
+            
+          
+        </script> 
+        
+        
+        
+        <script id="breeds" type="text/x-jquery-tmpl">
+        
+        <div class="col-lg-4">
+        <div class="categ">
+        <img src="${getimage()}" alt="">
+        <div class="info">
+        <h6>${name}</h6>
+        <h4></h4>
+            </div>
+            </div>
+            </div>
+        </script>
+        
+        
+        
+        
+    </body> 
+    
+</html> 
